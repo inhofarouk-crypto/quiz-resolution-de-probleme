@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Problem Solving Quiz - اختبار حل المشكلات</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b, #0f4c81);
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --accent-yellow: #facc15;
+      --accent-yellow-hover: #eab308;
+      --text-white: #f8fafc;
+      --text-sub: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-white);
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .lang-toggle {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--card-border);
+      color: var(--accent-yellow);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    html[dir="ltr"] .lang-toggle {
+      left: auto;
+      right: 16px;
+    }
+
+    .lang-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .question-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--card-border);
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    p.subtitle {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--accent-yellow);
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: var(--accent-yellow-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-white);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .quiz-sec {
+      display: none;
+    }
+
+    .question-title {
+      font-size: 16px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+      text-align: start;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-white);
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: start;
+      transition: 0.2s;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .option-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .option-btn.selected {
+      border-color: var(--accent-yellow);
+      background: rgba(250, 204, 21, 0.2);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .score-text {
+      font-size: 28px;
+      color: var(--accent-yellow);
+      font-weight: bold;
+      margin: 16px 0;
+    }
+
+    .result-badge {
+      background: rgba(250, 204, 21, 0.15);
+      border: 1px solid var(--accent-yellow);
+      color: var(--accent-yellow);
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <button class="lang-toggle" onclick="toggleLanguage()" id="lang-btn">Français 🇫🇷</button>
+
+    <!-- الشاشة الأولى: البداية -->
+    <div id="start-screen">
+      <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&auto=format&fit=crop&q=80" class="question-img" alt="Problem Solving">
+      <h1 id="start-title">اختبار التقييم الذاتي: حل المشكلات</h1>
+      <p class="subtitle" id="start-sub">اكتشف مستواك في تحليل المشاكل، اتخاذ القرارات، وإيجاد الحلول المناسبة من خلال هذا الاختبار التفاعلي.</p>
+      <button class="btn" onclick="startQuiz()" id="start-btn">بدء الاختبار ←</button>
+    </div>
+
+    <!-- الشاشة الثانية: الأسئلة -->
+    <div id="quiz-screen" class="quiz-sec">
+      <div class="subtitle" id="progress">سؤال 1 من 10</div>
+      <img id="q-image" class="question-img" src="" alt="Question Image">
+      <h2 class="question-title" id="question-text">نص السؤال...</h2>
+      <div class="options" id="options-container"></div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevQuestion()" id="prev-btn" style="visibility: hidden;">السابق</button>
+        <button class="btn" onclick="nextQuestion()" id="next-btn">التالي ←</button>
+      </div>
+    </div>
+
+    <!-- الشاشة الثالثة: النتيجة -->
+    <div id="result-screen" class="quiz-sec">
+      <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80" class="question-img" alt="Result">
+      <h1 id="res-header">نتيجة تقييم قدراتك</h1>
+      <div class="score-text" id="final-score">0 / 30</div>
+      <div class="result-badge" id="result-title">عنوان النتيجة</div>
+      <p class="subtitle" id="result-desc"></p>
+      <button class="btn" onclick="location.reload()" id="restart-btn">إعادة الاختبار 🔄</button>
+    </div>
+  </div>
+
+  <script>
+    let currentLang = 'ar';
+    let currentQuestion = 0;
+    let userAnswers = new Array(10).fill(null);
+
+    // خيارات الإجابة والنقاط المناظرة لها
+    const optionLabels = {
+      ar: ["أبداً (0 نقاط)", "أحياناً (نقطة واحدة)", "غالباً (نقطتان)", "دائماً (3 نقاط)"],
+      fr: ["Jamais (0 pt)", "Parfois (1 pt)", "Souvent (2 pts)", "Toujours (3 pts)"]
+    };
+
+    const quizData = [
+      {
+        img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&auto=format&fit=crop&q=80",
+        ar: "1) أحاول فهم المشكلة جيداً قبل البحث عن حل.",
+        fr: "1) J'essaie de bien comprendre le problème avant de chercher une solution."
+      },
+      {
+        img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80",
+        ar: "2) أبحث عن الأسباب الجذرية التي أدت إلى حدوث المشكلة.",
+        fr: "2) Je recherche les causes qui sont à l'origine d'un problème."
+      },
+      {
+        img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop&q=80",
+        ar: "3) أفكر في عدة حلول ممكناً قبل اتخاذ القرار.",
+        fr: "3) Je réfléchis à plusieurs solutions avant de prendre une décision."
+      },
+      {
+        img: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&auto=format&fit=crop&q=80",
+        ar: "4) أتخذ أحياناً قرارات سريعة دون التفكير في عواقبها.",
+        fr: "4) Je prends parfois une décision rapidement sans réfléchir à ses conséquences.",
+        isReversed: true // السؤال 4 معكوس النقاط
+      },
+      {
+        img: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600&auto=format&fit=crop&q=80",
+        ar: "5) بعد تطبيق الحل، أتحقق مما إذا كانت المشكلة قد حُلت فعلياً.",
+        fr: "5) Après avoir appliqué une solution, je vérifie si le problème est réellement résolu."
+      },
+      {
+        img: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&auto=format&fit=crop&q=80",
+        ar: "6) أستند إلى الحقائق والمعلومات الموثوقة قبل إبداء رأيي.",
+        fr: "6) Je me base sur les faits et les informations avant de donner mon avis."
+      },
+      {
+        img: "https://images.unsplash.com/photo-1531497865144-0464ef8fb9a9?w=600&auto=format&fit=crop&q=80",
+        ar: "7) أستمع لآراء ووجهات نظر الآخرين عندما أواجه مشكلة.",
+        fr: "7) J'écoute les points de vue des autres lorsque je rencontre un problème."
+      },
+      {
+        img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=80",
+        ar: "8) قبل اختيار الحل، أفكر في المخاطر والآثار المحتملة.",
+        fr: "8) Avant de choisir une solution, je réfléchis aux risques possibles."
+      },
+      {
+        img: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&auto=format&fit=crop&q=80",
+        ar: "9) عندما أرتكب خطأ، أحاول فهم سببه حتى لا أكرره مجدداً.",
+        fr: "9) Lorsque je fais une erreur, j'essaie d'en comprendre la cause afin de ne pas la répéter."
+      },
+      {
+        img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&auto=format&fit=crop&q=80",
+        ar: "10) أمام المشكلات الصعبة، أواصل البحث عن حل بدلاً من الاستسلام بسرعة.",
+        fr: "10) Face à un problème difficile, je continue à chercher une solution au lieu d'abandonner rapidement."
+      }
+    ];
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'ar' ? 'fr' : 'ar';
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      
+      document.getElementById('lang-btn').innerText = currentLang === 'ar' ? 'Français 🇫🇷' : 'العربية 🇲🇦';
+      
+      // Update Start UI
+      document.getElementById('start-title').innerText = currentLang === 'ar' ? 'اختبار التقييم الذاتي: حل المشكلات' : 'Test d\'Autodiagnostic : Résolution de Problèmes';
+      document.getElementById('start-sub').innerText = currentLang === 'ar' ? 'اكتشف مستواك في تحليل المشاكل، اتخاذ القرارات، وإيجاد الحلول المناسبة من خلال هذا الاختبار التفاعلي.' : 'Évaluez vos compétences dans l\'analyse des problèmes, la prise de décision et la recherche de solutions.';
+      document.getElementById('start-btn').innerText = currentLang === 'ar' ? 'بدء الاختبار ←' : 'Commencer le Test →';
+      document.getElementById('res-header').innerText = currentLang === 'ar' ? 'نتيجة تقييم قدراتك' : 'Résultat de votre Évaluation';
+      document.getElementById('restart-btn').innerText = currentLang === 'ar' ? 'إعادة الاختبار 🔄' : 'Recommencer 🔄';
+
+      if (document.getElementById('quiz-screen').style.display === 'block') {
+        showQuestion();
+      }
+    }
+
+    function startQuiz() {
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = quizData[currentQuestion];
+
+      document.getElementById('progress').innerText = currentLang === 'ar' 
+        ? `سؤال ${currentQuestion + 1} من ${quizData.length}` 
+        : `Question ${currentQuestion + 1} sur ${quizData.length}`;
+
+      document.getElementById('q-image').src = q.img;
+      document.getElementById('question-text').innerText = q[currentLang];
+
+      const optionsDiv = document.getElementById('options-container');
+      optionsDiv.innerHTML = '';
+
+      const labels = optionLabels[currentLang];
+      labels.forEach((optText, index) => {
+        // حساب النقاط بحسب الترتيب (0, 1, 2, 3)
+        let points = index;
+        if (q.isReversed) {
+          points = 3 - index; // السؤال 4 مقلوب النقاط لسلبيته
+        }
+
+        const btn = document.createElement('button');
+        btn.className = 'option-btn' + (userAnswers[currentQuestion] === points ? ' selected' : '');
+        btn.innerText = optText;
+        btn.onclick = () => selectAnswer(points);
+        optionsDiv.appendChild(btn);
+      });
+
+      // Update Nav Buttons
+      document.getElementById('prev-btn').style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
+      document.getElementById('prev-btn').innerText = currentLang === 'ar' ? '← السابق' : '← Précédent';
+      
+      const isLast = currentQuestion === quizData.length - 1;
+      document.getElementById('next-btn').innerText = isLast 
+        ? (currentLang === 'ar' ? 'عرض النتيجة ✨' : 'Voir Résultats ✨') 
+        : (currentLang === 'ar' ? 'التالي →' : 'Suivant →');
+    }
+
+    function selectAnswer(points) {
+      userAnswers[currentQuestion] = points;
+      showQuestion();
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion();
+      }
+    }
+
+    function nextQuestion() {
+      if (userAnswers[currentQuestion] === null) {
+        alert(currentLang === 'ar' ? 'يرجى اختيار إجابة أولاً!' : 'Veuillez sélectionner une réponse!');
+        return;
+      }
+
+      if (currentQuestion < quizData.length - 1) {
+        currentQuestion++;
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('result-screen').style.display = 'block';
+
+      const totalScore = userAnswers.reduce((a, b) => a + b, 0);
+      document.getElementById('final-score').innerText = `${totalScore} / 30`;
+
+      let title = "";
+      let desc = "";
+
+      if (currentLang === 'ar') {
+        if (totalScore >= 23) {
+          title = "🌟 مستوى ممتاز في حل المشكلات";
+          desc = "أنت تتمتع بمهارات عالية وموثوقة جداً في تحليل المشاكل، التفكير في الحلول البديلة، والتعلم المستمر من الأخطاء والخبرات.";
+        } else if (totalScore >= 16) {
+          title = "👍 مستوى جيد في حل المشكلات";
+          desc = "لديك منهجية جيدة في التعامل مع العقبات وتتخذ القرارات بعناية، ولكن يمكنك تحسين طريقة تقييم المخاطر والتثبت من نتائج الحلول.";
+        } else if (totalScore >= 8) {
+          title = "📈 مهارات في طور النمو والتحسين";
+          desc = "تعتمد أحياناً على الحلول السريعة أو التخمين. يُنصح بالتركيز أكثر على تحليل أسباب المشكلة والتعلم من التجارب السابقة.";
+        } else {
+          title = "⚠️ مهارات بحاجة إلى تطوير كبير";
+          desc = "تواجه صعوبة في معالجة المشاكل واتخاذ القرارات العقلانية. حاول إعطاء وقت أكبر لفهم أسباب المشكلة والاستماع لآراء الآخرين قبل التصرف.";
+        }
+      } else {
+        if (totalScore >= 23) {
+          title = "🌟 Très bon niveau en résolution de problèmes";
+          desc = "Vous maîtrisez parfaitement l'analyse des problèmes, l'évaluation des risques et le suivi des solutions.";
+        } else if (totalScore >= 16) {
+          title = "👍 Bon niveau en résolution de problèmes";
+          desc = "Vous avez une bonne démarche globale, mais vous pouvez encore améliorer l'analyse approfondie des risques et des causes.";
+        } else if (totalScore >= 8) {
+          title = "📈 Compétences en développement";
+          desc = "Vos compétences sont en progression. Prenez davantage le temps d'analyser les causes et d'écouter les avis externes.";
+        } else {
+          title = "⚠️ Compétences à améliorer";
+          desc = "Vous devez développer une approche plus méthodique face aux difficultés et éviter les décisions trop précipitées.";
+        }
+      }
+
+      document.getElementById('result-title').innerText = title;
+      document.getElementById('result-desc').innerText = desc;
+    }
+  </script>
+</body>
+</html>
